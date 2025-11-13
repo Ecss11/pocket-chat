@@ -89,6 +89,7 @@ const {
    * 精细化控制Query数据，使其在必要时保持为null（常用于数据切换时）
    */
   whetherToSetChatFinelyControlledQueryDataToNull,
+  chatMessageQueryisNullAndError,
 } = useChatDataProcessMessagesTwoway({
   chatRoomId,
   twowayPositioningCursorData,
@@ -158,6 +159,7 @@ const {
   twowayPositioningCursorData,
   chatDisplayDependentDataInitializationChoose,
   chatColPageRecoverDataCheck,
+  chatRoomMessagesInfiniteTwowayQuery,
 })
 export type ChatScrollCaptureSnapshotBeforeMessageChangeType =
   typeof chatScrollCaptureSnapshotBeforeMessageChange
@@ -195,6 +197,11 @@ useChatScrollToShowMore({
 
 const refScrollView = ref<HTMLElement | null>(null)
 
+const refChatColTemplateBase = ref<InstanceType<
+  typeof ChatColTemplateBase
+> | null>(null)
+export type RefChatColTemplateBaseType = typeof refChatColTemplateBase
+
 // 封装 chat的一些操作
 const {
   chatRoomMessagesRestartFnRunning,
@@ -214,12 +221,8 @@ const {
   replyPositioningFlagOpen,
   isChatBottomHasMore,
   refScrollView,
+  refChatColTemplateBase,
 })
-
-const refChatColTemplateBase = ref<InstanceType<
-  typeof ChatColTemplateBase
-> | null>(null)
-export type RefChatColTemplateBaseType = typeof refChatColTemplateBase
 
 // 未读实时消息统计
 const {
@@ -282,6 +285,7 @@ useChatColPageRecoverDataSetOnBeforeUnmountAndRouteLeave({
           chatRoomMessagesRealtimeUnReadNumber
         "
         :chatTitle="chatTitle"
+        :chatMessageQueryisNullAndError="chatMessageQueryisNullAndError"
       >
         <template #chatTopBarMoreMenu>
           <!-- 聊天顶栏菜单项 插槽 -->

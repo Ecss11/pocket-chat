@@ -13,6 +13,8 @@ import type {
   ChatScrollAdjustPositionAfterMessageChangeType,
   ChatScrollCaptureSnapshotBeforeMessageChangeType,
 } from './dependencies'
+import { potoMessage } from '@/utils'
+import { useI18nStore } from '@/stores'
 
 /** 封装了在聊天顶部或底部显示更多的函数，加载更多，控制显示限制 双向 */
 export const useChatShowMoreOnTopOrBottomTwoway = (data: {
@@ -33,6 +35,8 @@ export const useChatShowMoreOnTopOrBottomTwoway = (data: {
     chatScrollCaptureSnapshotBeforeMessageChange,
     chatScrollAdjustPositionAfterMessageChange,
   } = data
+
+  const i18nStore = useI18nStore()
 
   // 【251110】解决发现的严重问题
   // 消息加载中时跳转至设置页再返回时可能导致问题，十分严重，会导致页面卡死。可能是因为组件卸载后导致加载更多请求逻辑无限循环导致的
@@ -140,6 +144,20 @@ export const useChatShowMoreOnTopOrBottomTwoway = (data: {
       // 消息加载中时跳转至设置页再返回时可能导致问题，十分严重，会导致页面卡死。可能是因为组件卸载后导致加载更多请求逻辑无限循环导致的
       if (isUnmounted) {
         throw new Error('isUnmounted')
+      }
+      // 【251112】网络问题
+      console.log(
+        'chatRoomMessagesInfiniteTwowayQuery.isError',
+        chatRoomMessagesInfiniteTwowayQuery.isError.value
+      )
+      if (chatRoomMessagesInfiniteTwowayQuery.isError.value === true) {
+        potoMessage({
+          type: 'error',
+          message: i18nStore.t('chatMessageGetErrorText')(),
+        })
+        throw new Error(
+          'chatRoomMessagesInfiniteTwowayQuery.isError.value === true'
+        )
       }
     }
     // 计算限制游标
@@ -285,6 +303,20 @@ export const useChatShowMoreOnTopOrBottomTwoway = (data: {
       // 消息加载中时跳转至设置页再返回时可能导致问题，十分严重，会导致页面卡死。可能是因为组件卸载后导致加载更多请求逻辑无限循环导致的
       if (isUnmounted) {
         throw new Error('isUnmounted')
+      }
+      // 【251112】网络问题
+      console.log(
+        'chatRoomMessagesInfiniteTwowayQuery.isError',
+        chatRoomMessagesInfiniteTwowayQuery.isError.value
+      )
+      if (chatRoomMessagesInfiniteTwowayQuery.isError.value === true) {
+        potoMessage({
+          type: 'error',
+          message: i18nStore.t('chatMessageGetErrorText')(),
+        })
+        throw new Error(
+          'chatRoomMessagesInfiniteTwowayQuery.isError.value === true'
+        )
       }
     }
     // 计算限制游标

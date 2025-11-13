@@ -1,4 +1,4 @@
-import { watchUntilSourceCondition } from '@/utils'
+import { watchUntilQueryReady, watchUntilSourceCondition } from '@/utils'
 import type {
   ChatColPageRecoverDataCheckType,
   ChatDisplayDependentDataInitializationChooseType,
@@ -239,7 +239,29 @@ export const useChatShowLimitControlTwoway = (data: {
   }
   // 正常的初始化
   else {
-    chatRoomMessagesLimitCursorInitFn()
+    ;(async () => {
+      // 执行初始化显示限制函数前，先等待query
+      await watchUntilQueryReady(chatRoomMessagesInfiniteTwowayQuery).catch(
+        () => {}
+      )
+      // 【251112】网络问题
+      console.log(
+        'chatRoomMessagesInfiniteTwowayQuery.isError',
+        chatRoomMessagesInfiniteTwowayQuery.isError.value
+      )
+      if (chatRoomMessagesInfiniteTwowayQuery.isError.value === true) {
+        // 这里不需要错误提示
+        // potoMessage({
+        //   type: 'error',
+        //   message: i18nStore.t('chatMessageGetErrorText')(),
+        // })
+        throw new Error(
+          'chatRoomMessagesInfiniteTwowayQuery.isError.value === true'
+        )
+      }
+
+      await chatRoomMessagesLimitCursorInitFn()
+    })()
   }
 
   return {

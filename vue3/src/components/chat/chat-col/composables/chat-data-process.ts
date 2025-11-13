@@ -131,11 +131,27 @@ export const useChatDataProcessMessagesTwoway = (data: {
   const chatRoomMessagesListAndRealtime =
     chatRoomMessagesListAndRealtimeStep2Process
 
+  /**
+   * 消息查询是否错误，即是否需要输入栏显示错误所需的刷新。
+   * chatRoomMessagesInfiniteTwowayQuery.isError.value 为 true 且，
+   * chatRoomMessagesList 为 null 时，
+   * 这样判断以忽略上下加载导致的错误（无需刷新，再次加载即可）
+   */
+  const chatMessageQueryisNullAndError = computed(() => {
+    if (
+      chatRoomMessagesInfiniteTwowayQuery.isError.value === true &&
+      chatRoomMessagesList.value == null
+    ) {
+      return true
+    }
+    return false
+  })
   return {
     chatRoomMessagesInfiniteTwowayQuery,
     chatRoomMessagesList,
     chatRoomMessagesRealtime,
     chatRoomMessagesListAndRealtime,
     whetherToSetChatFinelyControlledQueryDataToNull,
+    chatMessageQueryisNullAndError,
   }
 }

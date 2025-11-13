@@ -7,6 +7,7 @@ import { useMutation } from '@tanstack/vue-query'
 import type { ChatInputBarPropsType } from './dependencies'
 import type { ChatInputBarDispalyType } from './chat-dispaly'
 import type { ChatInputBarDataType } from './chat-data'
+import { chatMessageControlRealtimeWaitTimeoutMsConfig } from '@/config'
 
 // 封装 聊天输入栏的操作逻辑
 // useChatInputBarControl
@@ -22,20 +23,12 @@ export const useChatInputBarControl = (
     props,
     chatInputContent,
     chatReplyMessage,
-    // chatReplyMessageSet,
     chatEditMessage,
     chatEditMessageSet,
     messageSendSubmitRunning,
     messageEditSubmitRunning,
-    // chatReplyMessageUserAvatarUrl,
     chatInputBarFunctionChoose,
-    // autoCyclicValueToShowNewMessageAndBackBottom,
-    // isHaveNewMessage,
-    // isShowMoreMenu,
-    // closeMoreMenu,
-    // toggleShowMoreMenu,
-    // targetMoreMenu,
-    // targetMoreMenuToggleShowButtonEl,
+    chatMessageIsRealtimeTimeoutSet,
   } = data
 
   // 取消回复消息
@@ -111,15 +104,40 @@ export const useChatInputBarControl = (
     messageSendSubmitRunning.value = true
     try {
       const resData = await messageSendMutation.mutateAsync()
-      // 发送后，仍应等待realtime收到自己发的消息
-      await watchUntilSourceCondition(
-        computed(
-          () =>
-            realtimeMessagesStore.createList.find((i) => i.id === resData.id) !=
-            null
-        ),
-        (val) => val === true
-      )
+      // 【251112】网络问题
+      const raceResults = await Promise.race([
+        // 实时消息等待逻辑
+        (async () => {
+          // 发送后，仍应等待realtime收到自己发的消息
+          await watchUntilSourceCondition(
+            computed(
+              () =>
+                realtimeMessagesStore.createList.find(
+                  (i) => i.id === resData.id
+                ) != null
+            ),
+            (val) => val === true
+          )
+          // 返回 normal 代表正常
+          return 'normal' as const
+        })(),
+        // 实时消息等待超时
+        (async () => {
+          await new Promise((resolve) =>
+            setTimeout(resolve, chatMessageControlRealtimeWaitTimeoutMsConfig)
+          )
+          // 返回 timeout 代表超时
+          return 'timeout' as const
+        })(),
+      ])
+      // 结果为超时，进行设置
+      if (raceResults === 'timeout') {
+        potoMessage({
+          type: 'warning',
+          message: i18nStore.t('chatMessageRealtimeWaitTimeoutErrorText')(),
+        })
+        chatMessageIsRealtimeTimeoutSet(true)
+      }
     } finally {
       messageSendSubmitRunning.value = false
     }
@@ -177,17 +195,42 @@ export const useChatInputBarControl = (
     messageEditSubmitRunning.value = true
     try {
       const resData = await messageEditMutation.mutateAsync()
-      // 发送后，仍应等待realtime收到更新情况
-      await watchUntilSourceCondition(
-        computed(() => {
-          const find = realtimeMessagesStore.updateList.find((i) => {
-            // 需消息id与updated更新时间才能确认是此次更新
-            return i.id === resData.id && i.updated === resData.updated
-          })
-          return find != null
-        }),
-        (val) => val === true
-      )
+
+      // 【251112】网络问题
+      const raceResults = await Promise.race([
+        // 实时消息等待逻辑
+        (async () => {
+          // 发送后，仍应等待realtime收到更新情况
+          await watchUntilSourceCondition(
+            computed(() => {
+              const find = realtimeMessagesStore.updateList.find((i) => {
+                // 需消息id与updated更新时间才能确认是此次更新
+                return i.id === resData.id && i.updated === resData.updated
+              })
+              return find != null
+            }),
+            (val) => val === true
+          )
+          // 返回 normal 代表正常
+          return 'normal' as const
+        })(),
+        // 实时消息等待超时
+        (async () => {
+          await new Promise((resolve) =>
+            setTimeout(resolve, chatMessageControlRealtimeWaitTimeoutMsConfig)
+          )
+          // 返回 timeout 代表超时
+          return 'timeout' as const
+        })(),
+      ])
+      // 结果为超时，进行设置
+      if (raceResults === 'timeout') {
+        potoMessage({
+          type: 'warning',
+          message: i18nStore.t('chatMessageRealtimeWaitTimeoutErrorText')(),
+        })
+        chatMessageIsRealtimeTimeoutSet(true)
+      }
     } finally {
       messageEditSubmitRunning.value = false
     }

@@ -28,7 +28,7 @@ export const i18nMessagesChatPart = {
   chatTopBarMoreMenuItemRestartText: {
     'en-US': () => 'Refresh' as const,
     'zh-CN': () => '刷新' as const,
-    'zh-TW': () => '刷新' as const,
+    'zh-TW': () => '重新整理' as const,
   },
   chatTopBarGlobalChatTitle: {
     'en-US': () => 'Global Chat' as const,
@@ -85,5 +85,20 @@ export const i18nMessagesChatPart = {
     'en-US': () => '[Message deleted]' as const,
     'zh-CN': () => '[消息已删除]' as const,
     'zh-TW': () => '[訊息已刪除]' as const,
+  },
+  chatMessageGetErrorText: {
+    'en-US': () => 'Failed to retrieve message' as const,
+    'zh-CN': () => '消息获取失败' as const,
+    'zh-TW': () => '訊息取得失敗' as const,
+  },
+  chatMessageRealtimeWaitTimeoutErrorText: {
+    'en-US': () => 'Network is unstable, please refresh' as const,
+    'zh-CN': () => '网络不稳定，请刷新' as const,
+    'zh-TW': () => '網路不穩定，請重新整理' as const,
+  },
+  chatInputBarMessageErrorText: {
+    'en-US': () => 'Network is unstable, please refresh' as const,
+    'zh-CN': () => '网络不稳定，请刷新' as const,
+    'zh-TW': () => '網路不穩定，請重新整理' as const,
   },
 } as const satisfies I18nMessagesSatisfiesType

@@ -42,6 +42,16 @@ export const useChatInputBarData = (data: {
     }
   }
 
+  /**
+   * 消息发送后是否出现了实时网络问题状态
+   * 发送、修改、删除 消息后实时等待超时，将设置为true
+   * 聊天刷新（重置）后，将设置为false
+   */
+  const chatMessageIsRealtimeTimeout = ref(false)
+  const chatMessageIsRealtimeTimeoutSet = (val: boolean) => {
+    chatMessageIsRealtimeTimeout.value = val
+  }
+
   const { chooseInitialization, chatColPageRecoverData } =
     props.chatDisplayDependentDataInitializationChoose
 
@@ -56,6 +66,8 @@ export const useChatInputBarData = (data: {
     chatInputContent.value = chatColPageRecoverData.data.chatInputContent
     chatReplyMessage.value = chatColPageRecoverData.data.chatReplyMessage
     chatEditMessage.value = chatColPageRecoverData.data.chatEditMessage
+    chatMessageIsRealtimeTimeout.value =
+      chatColPageRecoverData.data.chatMessageIsRealtimeTimeout
   }
   // 正常的初始化
   else {
@@ -69,6 +81,8 @@ export const useChatInputBarData = (data: {
     chatReplyMessageSet,
     chatEditMessage,
     chatEditMessageSet,
+    chatMessageIsRealtimeTimeout,
+    chatMessageIsRealtimeTimeoutSet,
   }
 }
 export type ChatInputBarDataType = ReturnType<typeof useChatInputBarData>

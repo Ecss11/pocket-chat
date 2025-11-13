@@ -56,6 +56,7 @@ const props = defineProps<{
   chatRoomMessagesRealtimeUnReadNumber: number
   /** 聊天标题 */
   chatTitle: string
+  chatMessageQueryisNullAndError: boolean
 }>()
 
 // 消息详情对话框
@@ -248,6 +249,12 @@ const chatRoomMessagesForShowWithOnMounted = computed(() => {
             :chatBackBottomFn="chatBackBottomFn"
             :chatRoomMessagesRealtimeUnReadNumber="
               chatRoomMessagesRealtimeUnReadNumber
+            "
+            :chatMessageQueryisNullAndError="chatMessageQueryisNullAndError"
+            :chatRoomMessagesRestartFn="chatRoomMessagesRestartFn"
+            :chatRoomMessagesRestartFnRunning="chatRoomMessagesRestartFnRunning"
+            :chatRoomMessagesRestartFnRunnable="
+              chatRoomMessagesRestartFnRunnable
             "
           ></ChatInputBar>
         </div>

@@ -30,28 +30,29 @@ export const useMessageControl = (data: {
 
   // 处理消息行的长按
   const onLongPressTargetRef = ref<HTMLElement | null>(null)
-  onLongPress(
-    onLongPressTargetRef,
-    () => {
-      // 消息已删除，返回
-      if (isCurrentMessageRealtimeUpdatedIsDeleted.value) {
-        return
-      }
-      // 长按时如果需要更新消息则优先
-      if (isCurrentMessageShouldUpdateRealtimeUpdated.value) {
-        updateCurrentMessageRealtimeUpdated()
-        return
-      }
-      openMessageInfoDialogFn()
-    },
-    {
-      delay: 500, // 默认是 1000ms，可自定义
-      modifiers: {
-        prevent: false, // 阻止默认行为，取消，避免影响文字赋值
-        stop: false, // 阻止事件冒泡，取消
-      },
-    }
-  )
+  // 【251113】取消消息长按
+  // onLongPress(
+  //   onLongPressTargetRef,
+  //   () => {
+  //     // 消息已删除，返回
+  //     if (isCurrentMessageRealtimeUpdatedIsDeleted.value) {
+  //       return
+  //     }
+  //     // 长按时如果需要更新消息则优先
+  //     if (isCurrentMessageShouldUpdateRealtimeUpdated.value) {
+  //       updateCurrentMessageRealtimeUpdated()
+  //       return
+  //     }
+  //     openMessageInfoDialogFn()
+  //   },
+  //   {
+  //     delay: 500, // 默认是 1000ms，可自定义
+  //     modifiers: {
+  //       prevent: false, // 阻止默认行为，取消，避免影响文字赋值
+  //       stop: false, // 阻止事件冒泡，取消
+  //     },
+  //   }
+  // )
 
   // 是否显示链接定位标记
   const isShowLinkPositioningFlag = computed(() => {

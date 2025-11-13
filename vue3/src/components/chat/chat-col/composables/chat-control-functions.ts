@@ -2,6 +2,7 @@ import { useQueryClient } from '@tanstack/vue-query'
 import type {
   ChatRoomMessagesInfiniteTwowayQueryType,
   PropsType,
+  RefChatColTemplateBaseType,
   TwowayPositioningCursorDataType,
 } from './dependencies'
 import type { PMLRCApiParameters0DataPageParamNonNullable } from '@/api'
@@ -10,9 +11,15 @@ import {
   chatRoomMessagesScrollBottomGtThisValueCanBackTopConfig,
   chatRoomMessagesTwowayPositioningCursorScrollTopOffsetConfig,
 } from '@/config'
-import { isElementInViewport, scrollToElementInContainer } from '@/utils'
+import {
+  isElementInViewport,
+  potoMessage,
+  scrollToElementInContainer,
+  watchUntilQueryReady,
+} from '@/utils'
 import { useResizeObserver, useScroll } from '@vueuse/core'
 import { useElementScrollMetrics } from '@/composables'
+import { useI18nStore } from '@/stores'
 
 /**
  * 封装 chat的一些操作
@@ -29,6 +36,7 @@ export const useChatControlFunctions = (data: {
   replyPositioningFlagOpen: (messageId: string) => void
   isChatBottomHasMore: ComputedRef<boolean>
   refScrollView: Ref<HTMLElement | null>
+  refChatColTemplateBase: RefChatColTemplateBaseType
 }) => {
   const {
     //
@@ -42,7 +50,10 @@ export const useChatControlFunctions = (data: {
     replyPositioningFlagOpen,
     isChatBottomHasMore,
     refScrollView,
+    refChatColTemplateBase,
   } = data
+
+  const i18nStore = useI18nStore()
 
   const queryClient = useQueryClient()
 
@@ -73,10 +84,28 @@ export const useChatControlFunctions = (data: {
       resetPositioningCursorDataAndRelatedData()
       // 重新加载数据
       await chatRoomMessagesInfiniteTwowayQuery.refetch()
+      // 【251112】网络问题
+      console.log(
+        'chatRoomMessagesInfiniteTwowayQuery.isError',
+        chatRoomMessagesInfiniteTwowayQuery.isError.value
+      )
+      if (chatRoomMessagesInfiniteTwowayQuery.isError.value === true) {
+        potoMessage({
+          type: 'error',
+          message: i18nStore.t('chatMessageGetErrorText')(),
+        })
+        throw new Error(
+          'chatRoomMessagesInfiniteTwowayQuery.isError.value === true'
+        )
+      }
       // 重新初始化显示限制游标
       await chatRoomMessagesLimitCursorInitFn()
       // 重新初始化滚动位置
       await chatRoomMessagesScrollInitFn()
+
+      refChatColTemplateBase.value?.refChatInputBar?.chatMessageIsRealtimeTimeoutSet(
+        false
+      )
     } finally {
       chatRoomMessagesRestartFnRunning.value = false
     }
@@ -153,6 +182,25 @@ export const useChatControlFunctions = (data: {
       // 已解决回复跳转不稳定的问题，原因出在Query.refetch，其导致已缓存的数据出现异常，这里不应该也不必调用refetch
       // await chatRoomMessagesInfiniteTwowayQuery.refetch()
 
+      await nextTick()
+      await watchUntilQueryReady(chatRoomMessagesInfiniteTwowayQuery).catch(
+        () => {}
+      )
+      // 【251112】网络问题
+      console.log(
+        'chatRoomMessagesInfiniteTwowayQuery.isError',
+        chatRoomMessagesInfiniteTwowayQuery.isError.value
+      )
+      if (chatRoomMessagesInfiniteTwowayQuery.isError.value === true) {
+        potoMessage({
+          type: 'error',
+          message: i18nStore.t('chatMessageGetErrorText')(),
+        })
+        throw new Error(
+          'chatRoomMessagesInfiniteTwowayQuery.isError.value === true'
+        )
+      }
+
       // 重新初始化显示限制游标
       await chatRoomMessagesLimitCursorInitFn()
       // 重新初始化滚动位置
@@ -216,6 +264,26 @@ export const useChatControlFunctions = (data: {
         })()
         // 重置双向定位无限查询的定位游标数据
         twowayPositioningCursorData.value = null
+
+        await nextTick()
+        await watchUntilQueryReady(chatRoomMessagesInfiniteTwowayQuery).catch(
+          () => {}
+        )
+        // 【251112】网络问题
+        console.log(
+          'chatRoomMessagesInfiniteTwowayQuery.isError',
+          chatRoomMessagesInfiniteTwowayQuery.isError.value
+        )
+        if (chatRoomMessagesInfiniteTwowayQuery.isError.value === true) {
+          potoMessage({
+            type: 'error',
+            message: i18nStore.t('chatMessageGetErrorText')(),
+          })
+          throw new Error(
+            'chatRoomMessagesInfiniteTwowayQuery.isError.value === true'
+          )
+        }
+
         // 重新初始化显示限制游标
         await chatRoomMessagesLimitCursorInitFn()
         // 重新初始化滚动位置

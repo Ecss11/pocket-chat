@@ -34,6 +34,7 @@ export type PageRecoverDataForChatColItemType = {
     chatInputContent: string
     chatReplyMessage: MessagesResponseWidthExpandReplyMessage | null
     chatEditMessage: MessagesResponseWidthExpand | null
+    chatMessageIsRealtimeTimeout: boolean
     dialogMessageId: string | null
     refScrollWarpScrollTop: number
     chatRoomMessagesRealtimeReadNumber: number
@@ -72,9 +73,9 @@ export const useRouterHistoryStore = defineStore(
       return stack.value[findIndex - 1]
     })
 
-    // TODO 各路由页面恢复数据，主要用于路由返回时，页面中的数据恢复（返回时保持之前浏览的位置和数据）
+    // 【页面恢复数据】各路由页面恢复数据，主要用于路由返回时，页面中的数据恢复（返回时保持之前浏览的位置和数据）
 
-    // 用于 ChatCol 的页面恢复数据
+    // 【页面恢复数据 ChatCol 】用于 ChatCol 的页面恢复数据
     const pageRecoverDataForChatCol = ref<
       Array<PageRecoverDataForChatColItemType>
     >([])
@@ -166,7 +167,8 @@ export const useRouterHistoryStore = defineStore(
         // 将 currentUuid 赋值为 newRoutorHistoryUuidUuid
         currentUuid.value = newRoutorHistoryUuidUuid
 
-        // TODO 对于各个路由页面恢复数据进行清理，只保留uuid在stack中存在的（将不可访问的删除）
+        // 【页面恢复数据清理】对于各个路由页面恢复数据进行清理，只保留uuid在stack中存在的（将不可访问的删除）
+        // 【页面恢复数据清理 ChatCol 】
         pageRecoverDataForChatCol.value =
           pageRecoverDataForChatCol.value.filter((i) => {
             const find = stack.value.find((item) => item.uuid === i.uuid)

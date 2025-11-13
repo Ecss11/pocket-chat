@@ -30,6 +30,10 @@ const props = defineProps<{
   chatBackBottomDisplayable: boolean
   chatBackBottomFn: () => Promise<void>
   chatRoomMessagesRealtimeUnReadNumber: number
+  chatMessageQueryisNullAndError: boolean
+  chatRoomMessagesRestartFn: () => Promise<void>
+  chatRoomMessagesRestartFnRunning: boolean
+  chatRoomMessagesRestartFnRunnable: boolean
 }>()
 export type ChatInputBarPropsType = typeof props
 
@@ -44,6 +48,8 @@ const {
   chatReplyMessageSet,
   chatEditMessage,
   chatEditMessageSet,
+  chatMessageIsRealtimeTimeout,
+  chatMessageIsRealtimeTimeoutSet,
 } = chatInputBarData
 
 // 封装 聊天输入栏显示逻辑
@@ -88,6 +94,8 @@ defineExpose({
   chatReplyMessageSet,
   chatEditMessage,
   chatEditMessageSet,
+  chatMessageIsRealtimeTimeout,
+  chatMessageIsRealtimeTimeoutSet,
 })
 </script>
 
@@ -142,8 +150,18 @@ defineExpose({
       <div class="my-2 flex items-stretch">
         <!-- 左栏 -->
         <div class="ml-2 mr-1 flow-root flex-1 truncate">
+          <!-- 错误提示 -->
+          <template v-if="chatInputBarFunctionChoose === 'error'">
+            <div class="mr-[4px] flex h-full items-center justify-end">
+              <div
+                class="select-none truncate text-[14px] font-bold text-color-text"
+              >
+                {{ i18nStore.t('chatInputBarMessageErrorText')() }}
+              </div>
+            </div>
+          </template>
           <!-- 登录提示 -->
-          <template v-if="chatInputBarFunctionChoose === 'login'">
+          <template v-else-if="chatInputBarFunctionChoose === 'login'">
             <div class="mr-[4px] flex h-full items-center justify-end">
               <div
                 class="select-none truncate text-[14px] font-bold text-color-text"
@@ -256,8 +274,25 @@ defineExpose({
         </div>
         <!-- 右栏 按钮 -->
         <div class="mr-2 flex flex-col-reverse">
+          <!-- 错误按钮（刷新） -->
+          <template v-if="chatInputBarFunctionChoose === 'error'">
+            <ElButton
+              circle
+              type="warning"
+              :loading="chatRoomMessagesRestartFnRunning"
+              :disabled="
+                !chatRoomMessagesRestartFnRunnable &&
+                !chatRoomMessagesRestartFnRunning
+              "
+              @click="chatRoomMessagesRestartFn"
+            >
+              <template #icon>
+                <RiRestartLine></RiRestartLine>
+              </template>
+            </ElButton>
+          </template>
           <!-- 登录按钮 -->
-          <template v-if="chatInputBarFunctionChoose === 'login'">
+          <template v-else-if="chatInputBarFunctionChoose === 'login'">
             <ElButton
               circle
               type="primary"

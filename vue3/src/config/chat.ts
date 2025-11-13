@@ -64,3 +64,6 @@ export const chatInputBarDefaultHeightConfig = 64 as const
 
 /** 聊天内容中的链接，在显示时的最大长度 */
 export const chatLinkContentMaxLength = 30 as const
+
+/** 发送、修改、删除，等消息操作后的实时等待，其最大等待时间（超时时间），单位毫秒ms */
+export const chatMessageControlRealtimeWaitTimeoutMsConfig = 5000 as const

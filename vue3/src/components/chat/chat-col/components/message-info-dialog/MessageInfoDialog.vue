@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { PMLRCApiParameters0DataPageParamNonNullable } from '@/api'
-import { ContainerDialog } from '@/components'
+import { ContainerDialog, TextWithLink } from '@/components'
 import { useRouteControlDialog } from '@/composables'
 import { useDateFormatYYYYMMDDHHmmss } from '@/utils'
 import type {
@@ -205,8 +205,13 @@ const authStore = useAuthStore()
                   </div>
                 </div>
                 <!-- 消息 -->
-                <div class="wrap-long-text mx-[15px] text-[16px]">
-                  {{ chatRoomMessagesGetOneQuery.data.value.content }}
+                <div
+                  class="wrap-long-text mx-[15px] text-[16px] text-color-text"
+                >
+                  <TextWithLink
+                    :data="chatRoomMessagesGetOneQuery.data.value.content"
+                    aTwcss="text-el-primary hover:underline"
+                  ></TextWithLink>
                 </div>
                 <!-- 时间 -->
                 <div class="mx-[15px] mt-[5px] flex items-center justify-end">
@@ -327,6 +332,7 @@ const authStore = useAuthStore()
       ref="refMessageDeleteDialog"
       :dialogMessageId="dialogMessageId"
       :messageInfoDialogClose="dialogClose"
+      :refChatInputBar="refChatInputBar"
     ></MessageDeleteDialog>
   </div>
 </template>

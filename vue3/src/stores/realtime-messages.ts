@@ -30,7 +30,8 @@ export const useRealtimeMessagesStore = defineStore(
       }
       const pbRes = await pbMessagesSubscribeAllApi(async (e) => {
         // // 模拟延迟
-        // await new Promise((resolve) => setTimeout(resolve, 5000))
+        // await new Promise((resolve) => setTimeout(resolve, 6000))
+
         if (e.action === 'create') {
           createListRef.value.push(e.record)
         }

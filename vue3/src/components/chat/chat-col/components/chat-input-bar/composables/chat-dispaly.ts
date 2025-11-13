@@ -23,9 +23,8 @@ export const useChatInputBarDispaly = (
     props,
     chatInputContent,
     chatReplyMessage,
-    chatReplyMessageSet,
     chatEditMessage,
-    chatEditMessageSet,
+    chatMessageIsRealtimeTimeout,
   } = data
 
   const messageSendSubmitRunning = ref(false)
@@ -63,12 +62,21 @@ export const useChatInputBarDispaly = (
   const authStore = useAuthStore()
 
   // 输入栏不同功能判断
+  // error 消息query失败或消息实时等待超时时，网路问题，请重试
   // login 未登录时，显示登录按钮
   // menu 正常状时为 输入栏+菜单按钮
   // send 输入文字（或设置回复）后为 输入栏+发送按钮
   // edit 编辑 chatEditMessage 不为null时为，输入栏+编辑按钮组
   // backTop 距底部距离大于大于一定值后为 回到底部文字+按钮
   const chatInputBarFunctionChoose = computed(() => {
+    // error 消息query失败或消息实时等待超时时，网路问题，请重试
+    if (
+      chatMessageIsRealtimeTimeout.value === true ||
+      props.chatMessageQueryisNullAndError === true
+    ) {
+      return 'error' as const
+    }
+
     // login 未登录时，显示登录按钮，backTop还会根据情况显示
     if (authStore.isValid === false) {
       if (props.chatBackBottomDisplayable === true) {

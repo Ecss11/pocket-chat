@@ -12,7 +12,7 @@ import {
   useMessageRealtimeUpdate,
 } from './composables'
 import { useI18nStore } from '@/stores'
-import { TextWithLink } from '@/components/tool'
+import { TextWithLink } from '@/components'
 
 const props = defineProps<{
   /** 消息数据 */

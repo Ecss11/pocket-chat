@@ -259,15 +259,15 @@ defineExpose({
               </div>
             </div>
             <!-- 聊天输入框 -->
+            <!-- :placeholder="
+                  i18nStore.t('chatInputBarShiftEnterPlaceholderText')()
+                " -->
             <div class="mt-[1px]">
               <ElInput
                 v-model="chatInputContent"
                 size="large"
                 type="textarea"
                 resize="none"
-                :placeholder="
-                  i18nStore.t('chatInputBarShiftEnterPlaceholderText')()
-                "
                 :rows="1"
                 :autosize="{ minRows: 1, maxRows: 10 }"
                 @keydown.shift.enter.exact.prevent="handleChatInputKeydownEnter"

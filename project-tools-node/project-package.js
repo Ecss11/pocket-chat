@@ -129,8 +129,8 @@ function preCheck(version) {
     errors.push("缺少 CHANGELOG.md 文件");
   } else {
     const changelogContent = fs.readFileSync(changelogPath, "utf-8");
-    if (!changelogContent.includes(version)) {
-      errors.push(`CHANGELOG.md 未包含当前版本号 ${version}，请更新后再打包`);
+    if (!changelogContent.includes(`[${version}]`)) {
+      errors.push(`CHANGELOG.md 未包含当前版本号 [${version}] ，请更新后再打包`);
     }
   }
 

@@ -20,7 +20,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge" alt="MIT License"></img>
   <img src="https://img.shields.io/github/release/haruki1953/pocket-chat.svg?style=for-the-badge" alt="GitHub Release"></img>
-  <img src=" https://img.shields.io/github/commit-activity/m/haruki1953/pocket-chat.svg?style=for-the-badge" alt="GitHub Activity"></img>
+  <img src="https://img.shields.io/github/commit-activity/m/haruki1953/pocket-chat.svg?style=for-the-badge" alt="GitHub Activity"></img>
 </p>
 
 <p align="center">

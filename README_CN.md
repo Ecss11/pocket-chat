@@ -1,13 +1,12 @@
-<div style="display: flex; justify-content: center;">
-  <img src="./assets/message-3-fill-7899CC.svg" style="width: 128px; height: 128px;"></img>
+<div align="center">
+  <img src="./assets/message-3-fill-7899CC.svg" alt="cover" style="width: 128px; height: 128px;"></img>
 </div>
-
 
 <h1 align="center">
   PocketChat
 </h1>
 
-<p align="center" style="margin-bottom: 5px;">
+<p align="center">
   <!-- Vue.js -->
   <img src="https://img.shields.io/badge/Vue.js-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white" alt="Vue.js"></img>
   <!-- TailwindCSS -->
@@ -16,13 +15,12 @@
   <img src="https://img.shields.io/badge/TanStack%20Query-FF4154?style=for-the-badge&logo=reactquery&logoColor=white" alt="TanStack Query"></img>
   <!-- PocketBase -->
   <img src="https://img.shields.io/badge/PocketBase-0E83CD?style=for-the-badge&logo=pocketbase&logoColor=white" alt="PocketBase"></img>
-</p>
-
-<p align="center">
+  </br>
   <img src="https://img.shields.io/badge/License-MIT-green.svg?style=for-the-badge" alt="MIT License"></img>
   <img src="https://img.shields.io/github/release/haruki1953/pocket-chat.svg?style=for-the-badge" alt="GitHub Release"></img>
   <img src="https://img.shields.io/github/commit-activity/m/haruki1953/pocket-chat.svg?style=for-the-badge" alt="GitHub Activity"></img>
 </p>
+
 
 <p align="center">
   <a href="./README.md">English</a> | 简体中文
